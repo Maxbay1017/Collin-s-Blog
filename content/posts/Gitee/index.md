@@ -38,7 +38,7 @@ UseHugoToc: true
 
 ---
 
-![image.png](pics/image.png)
+![image.png](./pics/image.png)
 
 ```bash
 cd projectFile
