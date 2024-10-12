@@ -1,9 +1,9 @@
 ---
-title: "An introduction to Sam Altman's blog: The Intelligence Age"
-date: 2020-09-15T11:30:03+00:00
+title = 'New Post'
+date = 2024-10-13T00:01:04+08:00
 # weight: 1
 # aliases: ["/first"]
-tags: ["Gitee"]
+tags: ["LLM"]
 author: "Collin Liu"
 # author: ["Me", "You"] # multiple authors
 showToc: true
@@ -24,12 +24,12 @@ ShowPostNavLinks: true
 ShowWordCount: true
 ShowRssButtonInSectionTermList: true
 UseHugoToc: true
-cover:
-    image: "https://ia.samaltman.com/_next/image?url=%2Fimages%2Fcover.png&w=3840&q=75" # image path/url
-    alt: "<alt text>" # alt text
-    caption: "The Intelligence Age" # display caption under cover
-    relative: false # when using page bundles set this to true
-    hidden: false # only hide on current single page
+# cover:
+   # image: "https://ia.samaltman.com/_next/image?url=%2Fimages%2Fcover.png&w=3840&q=75" # image path/url
+   # alt: "<alt text>" # alt text
+   # caption: "The Intelligence Age" # display caption under cover
+   # relative: false # when using page bundles set this to true
+   # hidden: false # only hide on current single page
 # editPost:
 #     URL: "https://github.com/<path_to_repo>/content"
 #     Text: "Suggest Changes" # edit text
@@ -37,9 +37,8 @@ cover:
 ---
 # Git
 
----
 
-![image.png](/assets/image.png)
+![image.png](pics/image.png)
 
 ```bash
 cd projectFile
