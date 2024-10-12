@@ -1,8 +1,7 @@
 ---
-title = 'New Post'
-date = 2024-10-13T00:01:04+08:00
-# weight: 1
-# aliases: ["/first"]
+title : 'Gitee'
+date : 2024-10-13T00:09:48+08:00
+draft : true
 tags: ["LLM"]
 author: "Collin Liu"
 # author: ["Me", "You"] # multiple authors
@@ -29,7 +28,7 @@ UseHugoToc: true
    # alt: "<alt text>" # alt text
    # caption: "The Intelligence Age" # display caption under cover
    # relative: false # when using page bundles set this to true
-   # hidden: false # only hide on current single page
+    # hidden: false # only hide on current single page
 # editPost:
 #     URL: "https://github.com/<path_to_repo>/content"
 #     Text: "Suggest Changes" # edit text
@@ -37,6 +36,7 @@ UseHugoToc: true
 ---
 # Git
 
+---
 
 ![image.png](pics/image.png)
 
