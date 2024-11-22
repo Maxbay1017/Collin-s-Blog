@@ -10,7 +10,6 @@ TocOpen: false
 draft: false
 hidemeta: false
 comments: false
-description: "The Intelligence Age by Sam Altman"
 canonicalURL: "https://canonical.url/to/page"
 disableHLJS: true # to disable highlightjs
 disableShare: false
@@ -19,7 +18,7 @@ hideSummary: false
 searchHidden: false 
 ShowReadingTime: true
 ShowBreadCrumbs: true
-ShowPostNavLinks: true
+ShowPostNavLinks: false
 ShowWordCount: true
 ShowRssButtonInSectionTermList: true
 UseHugoToc: true
@@ -34,9 +33,7 @@ UseHugoToc: true
 #     Text: "Suggest Changes" # edit text
 #     appendFilePath: true # to append file path to Edit link
 ---
-# Git
 
----
 
 ![image.png](./pics/image.png)
 
