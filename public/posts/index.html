@@ -130,6 +130,30 @@
 </header>
 
 <article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Tokenizer
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Tokenizer 实践 1. BBPE tokenizer tokenizer常见的训练算法是bpe,而目前各个企业都在使用BBPE BBPE(Byte-level Byte-Pair Encoding)是以字节为最小单位,而BPE最早则是以一个字符为最小单元 {&#39;l o w &lt;/w&gt;&#39;: 5, &#39;l o w e r &lt;/w&gt;&#39;: 2, &#39;n e w e s t &lt;/w&gt;&#39;: 6, &#39;w i d e s t &lt;/w&gt;&#39;: 3} {&#39;l o w &lt;/w&gt;&#39;: 5, &#39;l o w e r &lt;/w&gt;&#39;: 2, &#39;n e w es t &lt;/w&gt;&#39;: 6, &#39;w i d es t &lt;/w&gt;&#39;: 3} {&#39;l o w &lt;/w&gt;&#39;: 5, &#39;l o w e r &lt;/w&gt;&#39;: 2, &#39;n e w est &lt;/w&gt;&#39;: 6, &#39;w i d est &lt;/w&gt;&#39;: 3} 这是BPE的训练流程 可以看出它是以一个字母为最小单位处理 由于e s t频次最多 -&gt; est 最终合并成为一个token 而BBPE无需显式编码，直接操作字节流 将每个字符处理成字节流开始训练 比如这里是将text文本使用utf-8来编码成字节流 text = &#34;Ｕｎｉｃｏｄｅ! 🅤🅝🅘🅒🅞🅓🅔‽ 🇺‌🇳‌🇮‌🇨‌🇴‌🇩‌🇪! 😄 The very name strikes fear and awe into the hearts of programmers worldwide. We all know we ought to “support Unicode” in our software (whatever that means—like using wchar_t for all the strings, right?). But Unicode can be abstruse, and diving into the thousand-page Unicode Standard plus its dozens of supplementary annexes, reports, and notes can be more than a little intimidating. I don’t blame programmers for still finding the whole thing mysterious, even 30 years after Unicode’s inception.&#34; tokens = text.encode(&#34;utf-8&#34;) print(f&#34;After utf-8 encode:{tokens}&#34;) ...</p>
+  </div>
+  <footer class="entry-footer"><span title='2024-11-22 16:59:52 +0800 CST'>November 22, 2024</span>&nbsp;·&nbsp;5 min&nbsp;·&nbsp;2202 words&nbsp;·&nbsp;Collin Liu</footer>
+  <a class="entry-link" aria-label="post link to Tokenizer" href="http://localhost:1313/posts/tokenizer/tokenizer/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Gitee
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Git cd projectFile git confit --global user.name &#34;Collin Liu&#34; git confit --global user.email juunbailiu@gmail.com git init -- 初始化本地项目 git status -- 查看文件状态 git add -- 添加到缓存区 git commit -- 提交到本地仓库 touch .gitignore -- 添加不需要追踪的文件 git branch bad-boy git branch git checkout bad-boy -- 切换分支 trick： git commit -a -m “XXXX” git branch -D bad-boy --删除分支 git checkout -b tmp --创建并切换新分支 git merge temp -- 把temp版本的文件合并到当前分支 </p>
+  </div>
+  <footer class="entry-footer"><span title='2024-10-13 00:09:48 +0800 CST'>October 13, 2024</span>&nbsp;·&nbsp;1 min&nbsp;·&nbsp;139 words&nbsp;·&nbsp;Collin Liu</footer>
+  <a class="entry-link" aria-label="post link to Gitee" href="http://localhost:1313/posts/gitee/"></a>
+</article>
+
+<article class="post-entry"> 
 <figure class="entry-cover"><img loading="lazy" src="https://ia.samaltman.com/_next/image?url=%2Fimages%2Fcover.png&amp;w=3840&amp;q=75" alt="">
 </figure>
   <header class="entry-header">

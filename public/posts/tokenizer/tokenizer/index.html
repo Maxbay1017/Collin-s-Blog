@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="noindex, nofollow">
+<title>Tokenizer | Collin Liu&#39;s Blog</title>
+<meta name="keywords" content="LLM, Tokenizer, BPE">
+<meta name="description" content="The Intelligence Age by Sam Altman">
+<meta name="author" content="Collin Liu">
+<link rel="canonical" href="https://canonical.url/to/page">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.fc220c15db4aef0318bbf30adc45d33d4d7c88deff3238b23eb255afdc472ca6.css" integrity="sha256-/CIMFdtK7wMYu/MK3EXTPU18iN7/MjiyPrJVr9xHLKY=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/assets/favicon.png">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/posts/tokenizer/tokenizer/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="Collin Liu&#39;s Blog (Alt + H)">Collin Liu&#39;s Blog</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/" title="Posts">
+                    <span>Posts</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/archives/" title="Archive">
+                    <span>Archive</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="http://localhost:1313/">Home</a>&nbsp;»&nbsp;<a href="http://localhost:1313/posts/">Posts</a></div>
+    <h1 class="post-title entry-hint-parent">
+      Tokenizer
+    </h1>
+    <div class="post-description">
+      The Intelligence Age by Sam Altman
+    </div>
+    <div class="post-meta"><span title='2024-11-22 16:59:52 +0800 CST'>November 22, 2024</span>&nbsp;·&nbsp;5 min&nbsp;·&nbsp;2202 words&nbsp;·&nbsp;Collin Liu
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#1-bbpe-tokenizer">1. BBPE tokenizer</a>
+      <ul>
+        <li><a href="#11-bpe与bbpe算法总结">1.1 BPE与BBPE算法总结</a></li>
+      </ul>
+    </li>
+    <li><a href="#2-bbpe-源码解析">2. BBPE 源码解析</a></li>
+    <li><a href="#3-加载数据集">3. 加载数据集</a></li>
+    <li><a href="#4-train-a-tokenizer-based-bbpe">4. Train a tokenizer based bbpe</a>
+      <ul>
+        <li><a href="#41-现象分析">4.1 现象分析</a></li>
+        <li><a href="#42-为什么会出现这种现象">4.2 <strong>为什么会出现这种现象？</strong></a></li>
+      </ul>
+    </li>
+    <li><a href="#5-使用tokenizer直接decode">5. 使用tokenizer直接decode</a></li>
+  </ul>
+</nav>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><h1 id="tokenizer-实践">Tokenizer 实践<a hidden class="anchor" aria-hidden="true" href="#tokenizer-实践">#</a></h1>
+<h2 id="1-bbpe-tokenizer">1. BBPE tokenizer<a hidden class="anchor" aria-hidden="true" href="#1-bbpe-tokenizer">#</a></h2>
+<ul>
+<li>tokenizer常见的训练算法是bpe,而目前各个企业都在使用BBPE</li>
+<li>BBPE(Byte-level Byte-Pair Encoding)是以字节为最小单位,而BPE最早则是以一个字符为最小单元</li>
+</ul>
+<pre tabindex="0"><code>{&#39;l o w &lt;/w&gt;&#39;: 5, &#39;l o w e r &lt;/w&gt;&#39;: 2, &#39;n e w e s t &lt;/w&gt;&#39;: 6, &#39;w i d e s t &lt;/w&gt;&#39;: 3}
+</code></pre><pre tabindex="0"><code>{&#39;l o w &lt;/w&gt;&#39;: 5, &#39;l o w e r &lt;/w&gt;&#39;: 2, &#39;n e w es t &lt;/w&gt;&#39;: 6, &#39;w i d es t &lt;/w&gt;&#39;: 3}
+</code></pre><pre tabindex="0"><code>{&#39;l o w &lt;/w&gt;&#39;: 5, &#39;l o w e r &lt;/w&gt;&#39;: 2, &#39;n e w est &lt;/w&gt;&#39;: 6, &#39;w i d est &lt;/w&gt;&#39;: 3}
+</code></pre><ul>
+<li>这是BPE的训练流程
+<ul>
+<li>可以看出它是以一个字母为最小单位处理</li>
+<li>由于e s t频次最多 -&gt; est 最终合并成为一个token</li>
+</ul>
+</li>
+<li>而BBPE无需显式编码，直接操作字节流
+<ul>
+<li>将每个字符处理成字节流开始训练</li>
+<li>比如这里是将text文本使用utf-8来编码成字节流</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">text</span> <span class="o">=</span> <span class="s2">&#34;Ｕｎｉｃｏｄｅ! 🅤🅝🅘🅒🅞🅓🅔‽ 🇺‌🇳‌🇮‌🇨‌🇴‌🇩‌🇪! 😄 The very name strikes fear and awe into the hearts of programmers worldwide. We all know we ought to “support Unicode” in our software (whatever that means—like using wchar_t for all the strings, right?). But Unicode can be abstruse, and diving into the thousand-page Unicode Standard plus its dozens of supplementary annexes, reports, and notes can be more than a little intimidating. I don’t blame programmers for still finding the whole thing mysterious, even 30 years after Unicode’s inception.&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="n">tokens</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&#34;utf-8&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;After utf-8 encode:</span><span class="si">{</span><span class="n">tokens</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span></code></pre></div><p><img loading="lazy" src="../pics/pic.png" alt="image.png"  />
+</p>
+<ul>
+<li>BPE vs BBPE
+<ul>
+<li>最小单位
+<ul>
+<li>标准 BPE 使用 <strong>字符（character）</strong> 作为最小分词单位。每个输入文本被分解成字符（对于中文是单字，对于英文是字母）。</li>
+<li>BBPE 使用 <strong>字节（byte）</strong> 作为最小单位，而不是字符。每个文本先被编码为 UTF-8 字节流，然后以字节为单位进行 BPE 操作。</li>
+</ul>
+</li>
+<li>BPE局限性
+<ul>
+<li>对于 Unicode 文本（如中文、阿拉伯语等非拉丁字符语言），需要提前处理。</li>
+<li>多字节字符（如中文）在初始阶段会直接作为一个单位，不会进一步分割。</li>
+</ul>
+</li>
+<li>BBPE优势
+<ul>
+<li>支持任意语言，无需预处理（例如无需额外的分词工具）。</li>
+<li>对于未知字符或特殊符号，不会因为缺乏编码规则而失败。</li>
+<li>支持混合语言文本（如中英文混合、带有表情符号的文本）。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="11-bpe与bbpe算法总结">1.1 BPE与BBPE算法总结<a hidden class="anchor" aria-hidden="true" href="#11-bpe与bbpe算法总结">#</a></h3>
+<p><img loading="lazy" src="../pics/pic01.png" alt="image.png"  />
+</p>
+<h2 id="2-bbpe-源码解析">2. BBPE 源码解析<a hidden class="anchor" aria-hidden="true" href="#2-bbpe-源码解析">#</a></h2>
+<ul>
+<li>首先需要基于<!-- raw HTML omitted -->huggingface<!-- raw HTML omitted -->的<!-- raw HTML omitted -->tokenizers<!-- raw HTML omitted -->&gt;库构建一个训练tokenizer的函数</li>
+</ul>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">train_bbpe_tokenizer</span><span class="p">(</span><span class="n">input_ds</span><span class="p">,</span> <span class="n">lang</span><span class="p">,</span> <span class="n">vocab_size</span><span class="o">=</span><span class="mi">52000</span><span class="p">,</span> <span class="n">save_path</span><span class="o">=</span><span class="s2">&#34;bbpe_tokenizer_</span><span class="si">{0}</span><span class="s2">&#34;</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;&#34;&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s2">    使用 Byte-Level BPE 训练一个支持中英文的分词器。
+</span></span></span><span class="line"><span class="cl"><span class="s2">
+</span></span></span><span class="line"><span class="cl"><span class="s2">    Args:
+</span></span></span><span class="line"><span class="cl"><span class="s2">        input_ds: 数据集，包含文本句子的迭代器。
+</span></span></span><span class="line"><span class="cl"><span class="s2">        lang: 数据集语言。
+</span></span></span><span class="line"><span class="cl"><span class="s2">        vocab_size: 词汇表大小。
+</span></span></span><span class="line"><span class="cl"><span class="s2">        save_path: 分词器保存路径。
+</span></span></span><span class="line"><span class="cl"><span class="s2">    &#34;&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="c1"># Step 1: Initialize the tokenizer</span>
+</span></span><span class="line"><span class="cl">    <span class="n">tokenizer</span> <span class="o">=</span> <span class="n">Tokenizer</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">BPE</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1"># Step 2: Customize pre-tokenization and decoding (Optional)</span>
+</span></span><span class="line"><span class="cl">    <span class="c1"># 归一化（NFKC 标准化，处理全角/半角字符等问题）</span>
+</span></span><span class="line"><span class="cl">    <span class="n">tokenizer</span><span class="o">.</span><span class="n">normalizer</span> <span class="o">=</span> <span class="n">NFKC</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1"># 字节级别的分词器</span>
+</span></span><span class="line"><span class="cl">    <span class="n">tokenizer</span><span class="o">.</span><span class="n">pre_tokenizer</span> <span class="o">=</span> <span class="n">pre_tokenizers</span><span class="o">.</span><span class="n">ByteLevel</span><span class="p">(</span><span class="n">add_prefix_space</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1"># 字节级别的解码器</span>
+</span></span><span class="line"><span class="cl">    <span class="n">tokenizer</span><span class="o">.</span><span class="n">decoder</span> <span class="o">=</span> <span class="n">decoders</span><span class="o">.</span><span class="n">ByteLevel</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1"># Step 3: Train the tokenizer using the trainer</span>
+</span></span><span class="line"><span class="cl">    <span class="n">trainer</span> <span class="o">=</span> <span class="n">trainers</span><span class="o">.</span><span class="n">BpeTrainer</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">        <span class="n">vocab_size</span><span class="o">=</span><span class="n">vocab_size</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="c1"># special_tokens=[&#34;&lt;pad&gt;&#34;, &#34;&lt;unk&gt;&#34;, &#34;&lt;s&gt;&#34;, &#34;&lt;/s&gt;&#34;, &#34;&lt;mask&gt;&#34;],  # 特殊 token</span>
+</span></span><span class="line"><span class="cl">        <span class="n">special_tokens</span><span class="o">=</span><span class="p">[</span><span class="s2">&#34;&lt;|endoftext|&gt;&#34;</span><span class="p">,</span><span class="s2">&#34;&lt;|padding|&gt;&#34;</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1"># 从数据集迭代器中训练分词器</span>
+</span></span><span class="line"><span class="cl">    <span class="n">tokenizer</span><span class="o">.</span><span class="n">train_from_iterator</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">        <span class="n">get_all_sentences</span><span class="p">(</span><span class="n">input_ds</span><span class="p">,</span> <span class="n">lang</span><span class="p">),</span> <span class="n">trainer</span><span class="o">=</span><span class="n">trainer</span>
+</span></span><span class="line"><span class="cl">    <span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1"># Step 4: Save the tokenizer</span>
+</span></span><span class="line"><span class="cl">    <span class="n">save_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">save_path</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">lang</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">    <span class="n">tokenizer</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;</span><span class="si">{</span><span class="n">save_path</span><span class="si">}</span><span class="s2">.json&#34;</span><span class="p">,</span> <span class="n">pretty</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;Tokenizer saved to </span><span class="si">{</span><span class="n">save_path</span><span class="si">}</span><span class="s2">.json&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">tokenizer</span>
+</span></span></code></pre></div><ul>
+<li>构建一个辅助函数,用来提取数据集进行迭代式的训练</li>
+</ul>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">get_all_sentences</span><span class="p">(</span><span class="n">ds</span><span class="p">:</span><span class="n">Dataset</span><span class="p">,</span><span class="n">lang</span><span class="p">:</span><span class="nb">str</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">ds</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="k">yield</span> <span class="n">item</span><span class="p">[</span><span class="s1">&#39;translation&#39;</span><span class="p">][</span><span class="n">lang</span><span class="p">]</span>
+</span></span></code></pre></div><h2 id="3-加载数据集">3. 加载数据集<a hidden class="anchor" aria-hidden="true" href="#3-加载数据集">#</a></h2>
+<ul>
+<li>数据集我们使用<code>huggingface</code>的<code>datasets</code></li>
+</ul>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">datasets</span> <span class="kn">import</span> <span class="n">Dataset</span><span class="p">,</span><span class="n">load_dataset</span>
+</span></span><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">train_tokenizer</span> <span class="kn">import</span> <span class="n">Config</span><span class="p">,</span><span class="n">get_all_sentences</span><span class="p">,</span><span class="n">get_or_train_tokenizer</span>
+</span></span><span class="line"><span class="cl"><span class="n">config</span> <span class="o">=</span> <span class="n">Config</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="n">config</span><span class="o">.</span><span class="n">datasource</span> <span class="o">=</span> <span class="s1">&#39;Helsinki-NLP/opus-100&#39;</span>
+</span></span><span class="line"><span class="cl"><span class="n">config</span><span class="o">.</span><span class="n">lang_src</span> <span class="o">=</span>  <span class="s1">&#39;en&#39;</span>
+</span></span><span class="line"><span class="cl"><span class="n">config</span><span class="o">.</span><span class="n">lang_tgt</span> <span class="o">=</span>  <span class="s1">&#39;zh&#39;</span>
+</span></span><span class="line"><span class="cl"><span class="n">ds_raw</span> <span class="o">=</span> <span class="n">load_dataset</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;</span><span class="si">{</span><span class="n">config</span><span class="o">.</span><span class="n">datasource</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&#34;</span><span class="si">{</span><span class="n">config</span><span class="o">.</span><span class="n">lang_src</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">config</span><span class="o">.</span><span class="n">lang_tgt</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">,)</span>
+</span></span></code></pre></div><ul>
+<li>此外这里单独构建了一个<code>Config</code>类用来配置训练参数</li>
+</ul>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="nd">@dataclass</span>
+</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="n">datasource</span> <span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;opus_books&#39;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">lang_src</span> <span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;en&#39;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">lang_tgt</span> <span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;it&#39;</span>   
+</span></span><span class="line"><span class="cl">    <span class="n">tokenizer_file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;tokenizer_</span><span class="si">{0}</span><span class="s1">.json&#39;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">unk_token</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&#34;[UNK]&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">special_tokens</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&#34;[UNK]&#34;</span><span class="p">,</span> <span class="s2">&#34;[PAD]&#34;</span><span class="p">,</span> <span class="s2">&#34;[SOS]&#34;</span><span class="p">,</span> <span class="s2">&#34;[EOS]&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">min_frequency</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl"><span class="c1"># Optional</span>
+</span></span><span class="line"><span class="cl"><span class="nd">@dataclass</span>
+</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">BPEConfig</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="n">datasource</span> <span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;opus_books&#39;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">lang_src</span> <span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;en&#39;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">lang_tgt</span> <span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;zh&#39;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">tokenizer_file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;BPEtokenizer_</span><span class="si">{0}</span><span class="s1">.json&#39;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">vocab_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">30000</span>  <span class="c1"># 词汇表大小</span>
+</span></span><span class="line"><span class="cl">    <span class="n">min_frequency</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span>   <span class="c1"># 子词的最小频率</span>
+</span></span><span class="line"><span class="cl">    <span class="n">special_tokens</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&#34;[UNK]&#34;</span><span class="p">,</span> <span class="s2">&#34;[PAD]&#34;</span><span class="p">,</span> <span class="s2">&#34;[SOS]&#34;</span><span class="p">,</span> <span class="s2">&#34;[EOS]&#34;</span><span class="p">)</span>
+</span></span></code></pre></div><ul>
+<li>我们可以看一下加载的dataset&rsquo;s info</li>
+</ul>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">ds_raw</span>
+</span></span></code></pre></div><p><img loading="lazy" src="../pics/pic02.png" alt="image.png"  />
+</p>
+<h2 id="4-train-a-tokenizer-based-bbpe">4. Train a tokenizer based bbpe<a hidden class="anchor" aria-hidden="true" href="#4-train-a-tokenizer-based-bbpe">#</a></h2>
+<ul>
+<li>直接使用<code>train_bbpe_tokenizer</code>函数开始训练</li>
+</ul>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">train_HFtokenizer</span> <span class="kn">import</span> <span class="n">train_bbpe_tokenizer</span>
+</span></span><span class="line"><span class="cl"><span class="n">tokenizer</span><span class="o">=</span><span class="n">train_bbpe_tokenizer</span><span class="p">(</span><span class="n">input_ds</span><span class="o">=</span><span class="n">ds_raw</span><span class="p">[</span><span class="s1">&#39;train&#39;</span><span class="p">],</span><span class="n">vocab_size</span><span class="o">=</span><span class="mi">30000</span><span class="p">,</span><span class="n">lang</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">lang_tgt</span><span class="p">)</span> 
+</span></span></code></pre></div><ul>
+<li>训练完成以后会输出
+<ul>
+<li><code>Tokenizer saved to bbpe_tokenizer_zh.json</code></li>
+</ul>
+</li>
+<li>我们从数据集中简单测试一下</li>
+</ul>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">text</span> <span class="o">=</span> <span class="n">get_all_sentences</span><span class="p">(</span><span class="n">ds_raw</span><span class="p">[</span><span class="s1">&#39;train&#39;</span><span class="p">],</span><span class="n">lang</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">lang_tgt</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">text_iter</span><span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">text_iter</span>
+</span></span></code></pre></div><ul>
+<li>Output: <code>'上帝在挑战你，他说你是笨蛋'</code></li>
+<li>我们在该文本进行编码</li>
+</ul>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">tokens_zh</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">text_iter</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;ids:</span><span class="si">{</span><span class="n">tokens_zh</span><span class="o">.</span><span class="n">ids</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;type_ids:</span><span class="si">{</span><span class="n">tokens_zh</span><span class="o">.</span><span class="n">type_ids</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span> <span class="c1"># type_ids一般用于区分句子类型。例如，在BERT中，type_ids用于区分句子对中的两个句子，分别标记为0或1。在这个例子中，所有的type_ids都是0，表明这是一个单独的句子。</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;tokens:</span><span class="si">{</span><span class="n">tokens_zh</span><span class="o">.</span><span class="n">tokens</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;offsets:</span><span class="si">{</span><span class="n">tokens_zh</span><span class="o">.</span><span class="n">offsets</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span></code></pre></div><ul>
+<li>Output</li>
+</ul>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">ids</span><span class="p">:[</span><span class="mi">3684</span><span class="p">,</span> <span class="mi">241</span><span class="p">,</span> <span class="mi">1756</span><span class="p">,</span> <span class="mi">273</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">3609</span><span class="p">,</span> <span class="mi">2180</span><span class="p">,</span> <span class="mi">11477</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="n">type_ids</span><span class="p">:[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="n">tokens</span><span class="p">:[</span><span class="s1">&#39;ä¸Ĭå¸Ŀ&#39;</span><span class="p">,</span> <span class="s1">&#39;åľ¨&#39;</span><span class="p">,</span> <span class="s1">&#39;æĮĳæĪĺ&#39;</span><span class="p">,</span> <span class="s1">&#39;ä½ł&#39;</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39;ä»ĸè¯´&#39;</span><span class="p">,</span> <span class="s1">&#39;ä½łæĺ¯&#39;</span><span class="p">,</span> <span class="s1">&#39;ç¬¨èĽĭ&#39;</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="n">offsets</span><span class="p">:[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">9</span><span class="p">),</span> <span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">11</span><span class="p">),</span> <span class="p">(</span><span class="mi">11</span><span class="p">,</span> <span class="mi">13</span><span class="p">)]</span>
+</span></span></code></pre></div><ul>
+<li>可以发现能够正常将文本映射成ids</li>
+<li>但是tokens确实乱码存储的,当我们查看训练完保存的的<code>vocab.json</code>发现,很多内容也是乱码的</li>
+</ul>
+<p><img loading="lazy" src="../pics/pic03.png" alt="image.png"  />
+</p>
+<h3 id="41-现象分析">4.1 现象分析<a hidden class="anchor" aria-hidden="true" href="#41-现象分析">#</a></h3>
+<ol>
+<li><strong>Token 显示为乱码：</strong>
+<ul>
+<li>分词器的 <code>encode</code> 方法返回的 tokens 看起来是乱码（如 <code>á</code> 等）。</li>
+<li>这是因为使用了 <code>ByteLevel</code> 的分词器，它将输入文本按字节级别处理，每个字符被映射到字节形式。</li>
+</ul>
+</li>
+<li><strong>Decode 后正常解码：</strong>
+<ul>
+<li>分词器的 <code>decode</code> 方法能够正确地将 token IDs 转回原始文本。</li>
+<li>这是因为 Byte-Level 分词器会在解码时，将这些字节形式映射回原始的 Unicode 字符。</li>
+</ul>
+</li>
+</ol>
+<h3 id="42-为什么会出现这种现象">4.2 <strong>为什么会出现这种现象？</strong><a hidden class="anchor" aria-hidden="true" href="#42-为什么会出现这种现象">#</a></h3>
+<p>Byte-Level BPE 的核心原理是对字节序列（而不是字符）进行操作：</p>
+<ul>
+<li><strong>训练时：</strong> 输入文本会被分割成字节，而不是直接按字符分割。每个字节都会被映射到一个 token。</li>
+<li><strong>编码时：</strong> 输出的 token 是字节的编码结果，可能无法直接显示为人类可读的字符。</li>
+<li><strong>解码时：</strong> 分词器会将这些字节还原为原始文本。</li>
+</ul>
+<h2 id="5-使用tokenizer直接decode">5. 使用tokenizer直接decode<a hidden class="anchor" aria-hidden="true" href="#5-使用tokenizer直接decode">#</a></h2>
+<ul>
+<li>面对乱码的token,可以直接使用tokenizer去decode文本的ids</li>
+</ul>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">tokens_zh</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">tokens_zh</span><span class="o">.</span><span class="n">ids</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">tokens_zh</span>
+</span></span></code></pre></div><ul>
+<li>
+<p>Output: ```&lsquo;上帝在挑战你,他说你是笨蛋&rsquo;``</p>
+</li>
+<li>
+<p>可以看出能够直接返回正常人类可理解的文本</p>
+</li>
+<li>
+<p>但是我们想手动解码可以参考Karpathy‘s MinBPE源码</p>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">decode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ids</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">     <span class="c1"># given ids (list of integers), return Python string</span>
+</span></span><span class="line"><span class="cl">    <span class="n">part_bytes</span> <span class="o">=</span> <span class="p">[]</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">ids</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="n">idx</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">vocab</span><span class="p">:</span>    <span class="c1"># idx -&gt; bytes   </span>
+</span></span><span class="line"><span class="cl">            <span class="n">part_bytes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vocab</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>  <span class="c1"># 遍历ids中idx 在vocab找到对应的token utf-8表示</span>
+</span></span><span class="line"><span class="cl">        <span class="k">elif</span> <span class="n">idx</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">inverse_special_tokens</span><span class="p">:</span> <span class="c1"># 如果是特殊token对应的idx 在倒置的special token 字典里查找</span>
+</span></span><span class="line"><span class="cl">            <span class="n">part_bytes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inverse_special_tokens</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&#34;utf-8&#34;</span><span class="p">))</span> <span class="c1"># 然后在utf-8编码转化为token</span>
+</span></span><span class="line"><span class="cl">        <span class="k">else</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;invalid token id: </span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">text_bytes</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&#34;&#34;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">part_bytes</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">text</span> <span class="o">=</span> <span class="n">text_bytes</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&#34;utf-8&#34;</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s2">&#34;replace&#34;</span><span class="p">)</span> <span class="c1"># 对text_bytes进行utf-8解码形成token</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">text</span>
+</span></span></code></pre></div>
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="http://localhost:1313/tags/llm/">LLM</a></li>
+      <li><a href="http://localhost:1313/tags/tokenizer/">Tokenizer</a></li>
+      <li><a href="http://localhost:1313/tags/bpe/">BPE</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="next" href="http://localhost:1313/posts/gitee/">
+    <span class="title">Next »</span>
+    <br>
+    <span>Gitee</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span><a href="https://collinliu.github.io/">©2024 Collin Liu&rsquo;s Blog</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

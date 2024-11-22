@@ -7,13 +7,27 @@
     <generator>Hugo -- 0.135.0</generator>
     <language>en</language>
     <copyright>©2024 Collin Liu&amp;rsquo;s Blog</copyright>
-    <lastBuildDate>Tue, 15 Sep 2020 11:30:03 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 22 Nov 2024 16:59:52 +0800</lastBuildDate>
     <atom:link href="http://localhost:1313/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>BPE</title>
+      <link>http://localhost:1313/tags/bpe/</link>
+      <pubDate>Fri, 22 Nov 2024 16:59:52 +0800</pubDate>
+      <guid>http://localhost:1313/tags/bpe/</guid>
+      <description></description>
+    </item>
     <item>
       <title>LLM</title>
       <link>http://localhost:1313/tags/llm/</link>
-      <pubDate>Tue, 15 Sep 2020 11:30:03 +0000</pubDate>
+      <pubDate>Fri, 22 Nov 2024 16:59:52 +0800</pubDate>
       <guid>http://localhost:1313/tags/llm/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Tokenizer</title>
+      <link>http://localhost:1313/tags/tokenizer/</link>
+      <pubDate>Fri, 22 Nov 2024 16:59:52 +0800</pubDate>
+      <guid>http://localhost:1313/tags/tokenizer/</guid>
       <description></description>
     </item>
   </channel>

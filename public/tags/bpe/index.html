@@ -5,11 +5,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="noindex, nofollow">
-<title>Archives | Collin Liu&#39;s Blog</title>
+<title>BPE | Collin Liu&#39;s Blog</title>
 <meta name="keywords" content="">
-<meta name="description" content="archives">
+<meta name="description" content="">
 <meta name="author" content="">
-<link rel="canonical" href="http://localhost:1313/archives/">
+<link rel="canonical" href="http://localhost:1313/tags/bpe/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.fc220c15db4aef0318bbf30adc45d33d4d7c88deff3238b23eb255afdc472ca6.css" integrity="sha256-/CIMFdtK7wMYu/MK3EXTPU18iN7/MjiyPrJVr9xHLKY=" rel="preload stylesheet" as="style">
 <link rel="icon" href="http://localhost:1313/assets/favicon.png">
 <link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
@@ -18,7 +18,8 @@
 <link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="en" href="http://localhost:1313/archives/">
+<link rel="alternate" type="application/rss+xml" href="http://localhost:1313/tags/bpe/index.xml">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/tags/bpe/">
 <noscript>
     <style>
         #theme-toggle,
@@ -105,7 +106,7 @@
             </li>
             <li>
                 <a href="http://localhost:1313/archives/" title="Archive">
-                    <span class="active">Archive</span>
+                    <span>Archive</span>
                 </a>
             </li>
             <li>
@@ -121,67 +122,24 @@
         </ul>
     </nav>
 </header>
-<main class="main">
-
+<main class="main"> 
 <header class="page-header">
   <h1>
-    Archives
+    BPE
   </h1>
 </header>
-<div class="archive-year">
-  <h2 class="archive-year-header" id="2024">
-    <a class="archive-header-link" href="#2024">2024</a>
-    <sup class="archive-count">&nbsp;2</sup>
-  </h2>
-  <div class="archive-month">
-    <h3 class="archive-month-header" id="2024-November">
-      <a class="archive-header-link" href="#2024-November">November</a>
-      <sup class="archive-count">&nbsp;1</sup>
-    </h3>
-    <div class="archive-posts">
-      <div class="archive-entry">
-        <h3 class="archive-entry-title entry-hint-parent">Tokenizer
-        </h3>
-        <div class="archive-meta"><span title='2024-11-22 16:59:52 +0800 CST'>November 22, 2024</span>&nbsp;·&nbsp;5 min&nbsp;·&nbsp;2202 words&nbsp;·&nbsp;Collin Liu</div>
-        <a class="entry-link" aria-label="post link to Tokenizer" href="http://localhost:1313/posts/tokenizer/tokenizer/"></a>
-      </div>
-    </div>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Tokenizer
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Tokenizer 实践 1. BBPE tokenizer tokenizer常见的训练算法是bpe,而目前各个企业都在使用BBPE BBPE(Byte-level Byte-Pair Encoding)是以字节为最小单位,而BPE最早则是以一个字符为最小单元 {&#39;l o w &lt;/w&gt;&#39;: 5, &#39;l o w e r &lt;/w&gt;&#39;: 2, &#39;n e w e s t &lt;/w&gt;&#39;: 6, &#39;w i d e s t &lt;/w&gt;&#39;: 3} {&#39;l o w &lt;/w&gt;&#39;: 5, &#39;l o w e r &lt;/w&gt;&#39;: 2, &#39;n e w es t &lt;/w&gt;&#39;: 6, &#39;w i d es t &lt;/w&gt;&#39;: 3} {&#39;l o w &lt;/w&gt;&#39;: 5, &#39;l o w e r &lt;/w&gt;&#39;: 2, &#39;n e w est &lt;/w&gt;&#39;: 6, &#39;w i d est &lt;/w&gt;&#39;: 3} 这是BPE的训练流程 可以看出它是以一个字母为最小单位处理 由于e s t频次最多 -&gt; est 最终合并成为一个token 而BBPE无需显式编码，直接操作字节流 将每个字符处理成字节流开始训练 比如这里是将text文本使用utf-8来编码成字节流 text = &#34;Ｕｎｉｃｏｄｅ! 🅤🅝🅘🅒🅞🅓🅔‽ 🇺‌🇳‌🇮‌🇨‌🇴‌🇩‌🇪! 😄 The very name strikes fear and awe into the hearts of programmers worldwide. We all know we ought to “support Unicode” in our software (whatever that means—like using wchar_t for all the strings, right?). But Unicode can be abstruse, and diving into the thousand-page Unicode Standard plus its dozens of supplementary annexes, reports, and notes can be more than a little intimidating. I don’t blame programmers for still finding the whole thing mysterious, even 30 years after Unicode’s inception.&#34; tokens = text.encode(&#34;utf-8&#34;) print(f&#34;After utf-8 encode:{tokens}&#34;) ...</p>
   </div>
-  <div class="archive-month">
-    <h3 class="archive-month-header" id="2024-October">
-      <a class="archive-header-link" href="#2024-October">October</a>
-      <sup class="archive-count">&nbsp;1</sup>
-    </h3>
-    <div class="archive-posts">
-      <div class="archive-entry">
-        <h3 class="archive-entry-title entry-hint-parent">Gitee
-        </h3>
-        <div class="archive-meta"><span title='2024-10-13 00:09:48 +0800 CST'>October 13, 2024</span>&nbsp;·&nbsp;1 min&nbsp;·&nbsp;139 words&nbsp;·&nbsp;Collin Liu</div>
-        <a class="entry-link" aria-label="post link to Gitee" href="http://localhost:1313/posts/gitee/"></a>
-      </div>
-    </div>
-  </div>
-</div>
-<div class="archive-year">
-  <h2 class="archive-year-header" id="2020">
-    <a class="archive-header-link" href="#2020">2020</a>
-    <sup class="archive-count">&nbsp;1</sup>
-  </h2>
-  <div class="archive-month">
-    <h3 class="archive-month-header" id="2020-September">
-      <a class="archive-header-link" href="#2020-September">September</a>
-      <sup class="archive-count">&nbsp;1</sup>
-    </h3>
-    <div class="archive-posts">
-      <div class="archive-entry">
-        <h3 class="archive-entry-title entry-hint-parent">An introduction to Sam Altman&rsquo;s blog: The Intelligence Age
-        </h3>
-        <div class="archive-meta"><span title='2020-09-15 11:30:03 +0000 +0000'>September 15, 2020</span>&nbsp;·&nbsp;1 min&nbsp;·&nbsp;104 words&nbsp;·&nbsp;Collin Liu</div>
-        <a class="entry-link" aria-label="post link to An introduction to Sam Altman&#39;s blog: The Intelligence Age" href="http://localhost:1313/posts/myfirstpost/"></a>
-      </div>
-    </div>
-  </div>
-</div>
+  <footer class="entry-footer"><span title='2024-11-22 16:59:52 +0800 CST'>November 22, 2024</span>&nbsp;·&nbsp;5 min&nbsp;·&nbsp;2202 words&nbsp;·&nbsp;Collin Liu</footer>
+  <a class="entry-link" aria-label="post link to Tokenizer" href="http://localhost:1313/posts/tokenizer/tokenizer/"></a>
+</article>
     </main>
     
 <footer class="footer">
