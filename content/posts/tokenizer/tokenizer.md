@@ -10,7 +10,6 @@ TocOpen: false
 draft: false
 hidemeta: false
 comments: false
-# description: "The Intelligence Age by Sam Altman"
 canonicalURL: "https://canonical.url/to/page"
 disableHLJS: true # to disable highlightjs
 disableShare: false

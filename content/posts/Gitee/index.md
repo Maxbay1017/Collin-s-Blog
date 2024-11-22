@@ -2,7 +2,7 @@
 title : 'Gitee'
 date : 2024-10-13T00:09:48+08:00
 draft : true
-tags: ["LLM"]
+tags: ["git"]
 author: "Collin Liu"
 # author: ["Me", "You"] # multiple authors
 showToc: true
